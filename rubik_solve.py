@@ -27,12 +27,12 @@ def rubik_solve_rnd(colors=[4,2,1,0,3,2,1,5,4,3,2,5,5,0,1,4,0,1,3,4,0,5,2,3], at
   When you provide the current colors on the cube the function runs random emulations 
     of cube rotation series and evaulates the outcome.
   
-  Colors: is the initial list of colors (from left to right, from top to down), default is the completely scrambled cube
-  Attempts: number of complete restarts (if an attempt is not successful)
-  max_seqs: maximum number of evaluations
+  colors: is the initial list of colors (from left to right, from top to down), default is the completely scrambled cube
+  attempts_max: number of complete restarts (if an attempt is not successful)
+  sequences_max: maximum number of evaluations, one sequence can contain multiple steps
   random_rotations: number of random transformation series per iteration
-  max_spins: maximum lenght of an evaluation sequence
-  min_spins: minimum lenght of an evaluation sequence
+  min_steps: minimum lenght of an evaluation sequence
+  max_steps: maximum lenght of an evaluation sequence
   """
   for atempt in range(atempts_max):
     It = colors 
@@ -43,24 +43,23 @@ def rubik_solve_rnd(colors=[4,2,1,0,3,2,1,5,4,3,2,5,5,0,1,4,0,1,3,4,0,5,2,3], at
       E = sum([len(set(It[i*4:i*4+4])) for i in range(6)]) #Error before rotation(s)
       for steps in range(min_steps,max_steps):
         found = False
-        for random_rotation in range(random_rotations): #try random spins many times per each length (i)
+        for random_rotation in range(random_rotations): #try random rotations many times per each seq length
           Itt = It
           Tst = []
           for k in range(steps):
             tt = Tk[random.choice(range(12))]    #random selection of the transformation
-            Itt = list(itemgetter(*T[tt])(Itt)) #transformation applied -> Itt
+            Itt = list(itemgetter(*T[tt])(Itt))  #transformation applied and stored
             Tst.append(tt)
-          Et = sum([len(set(Itt[i*4:i*4+4])) for i in range(6)])
+          Et = sum([len(set(Itt[i*4:i*4+4])) for i in range(6)]) #Error-test: lets evaulate at the end of the sequence
           if Et<E:
             found = True
-            It = Itt        #accept the transformations sequence (1-10 steps long)
+            It = Itt        #accept the sequence
             Ts.append(Tst)  #store the successful sequence
             print("Sequence-"+str(sequence)+" ERROR: " + str(Et)+" sequence length-"+str(steps)+" iteration-"+str(random_rotation), flush=True)
-            break           # l loop - random search with i lenght - was successful
+            break
         if found:
-          break  # minmax spins loop has to be interrupted as well!
-      if Et==6:
-        #print(Ts, flush=True)
+          break  #stop the entire sequence and move forward to the next
+      if Et==6:  #Final solution, print results
         A = []
         for ts in Ts:
           for t in ts:A.append(t)
