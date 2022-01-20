@@ -1,3 +1,4 @@
 {'year':'2022', 'month':'01', 'name':'rubik_python_22', 'stage':'Prod', 'platform':'Dell', 'applayer':'', 'language':'python', 'technique':'loop random transformations and evaluation'}
 tags: 
 urls: https://medium.com/@imresblog/pythonic-solution-of-the-2x2-rubic-cube-e82847f39dae
+https://github.com/gyimre/rubik.git
